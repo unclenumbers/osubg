@@ -1,0 +1,13 @@
+/**
+ * osubg needs 3 main commands: refresh, sync, and swap. 
+ * refresh simply updates the list of mapsets on file
+ * sync switches all maps to the current mode (this will NOT protect against custom user updates)
+ * swap changes modes and switches all bgs
+ * 
+ * folder structure:
+ * 	config file (has mapset folder path, current mode, mapset count)
+ * 	exact copy of dir names of mapset folder
+ * 		each of these dirs has a mode file inside for tracking purposes
+ * 	troll ecchi image??
+ *  png and jpg gray bgs
+ */

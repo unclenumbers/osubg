@@ -1,0 +1,11 @@
+#include "sbwnd_res.h"
+
+TBL_ONE ACCELERATORS {
+    0x08,   LARGE_BACK, VIRTKEY, CONTROL
+    "^V",   PASTE
+    "^C",   COPY
+}
+
+MENU_ONE MENU {
+    MENUITEM "&Fonts", ITEM_FONTS
+}
