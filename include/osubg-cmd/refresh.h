@@ -10,4 +10,7 @@
  * 		each of these dirs has a mode file inside for tracking purposes
  * 	troll ecchi image??
  *  png and jpg gray bgs
+ * 
+ *  .osu files have bg lines, I can just replace the bg entry with my "graybg.png"
+ *  can also gen unique names if needed
  */
