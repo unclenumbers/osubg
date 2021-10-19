@@ -14,3 +14,5 @@
  *  .osu files have bg lines, I can just replace the bg entry with my "graybg.png"
  *  can also gen unique names if needed
  */
+
+int osubgRefresh( void );
