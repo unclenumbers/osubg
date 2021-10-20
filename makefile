@@ -8,10 +8,10 @@ CFLAGS = -I./include -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-
 LIBS = -lgdiplus -lgdi32 -luser32 -lcomdlg32
 
 bin/osubg.exe : obj/osubg.o obj/sb_ds.o obj/sbwnd_init.o obj/sbwnd_create.o obj/sbwnd_general.o obj/sbwnd_proc.o res/sbwnd_res.o
-	gcc -o bin/osubg.exe obj/osubg.o obj/sb_ds.o obj/sbwnd_init.o obj/sbwnd_create.o obj/sbwnd_general.o obj/sbwnd_proc.o res/sbwnd_res.o $(LIBS)
+	md bin & gcc -o bin/osubg.exe obj/osubg.o obj/sb_ds.o obj/sbwnd_init.o obj/sbwnd_create.o obj/sbwnd_general.o obj/sbwnd_proc.o res/sbwnd_res.o $(LIBS)
 
-obj/osubg.o : src/main/osubg.c $(headers)
-	gcc -c -g -o obj/osubg.o src/main/osubg.c $(CFLAGS)
+obj/osubg.o : src/main/osubg.c obj $(headers)
+	md obj & gcc -c -g -o obj/osubg.o src/main/osubg.c $(CFLAGS)
 
 obj/sb_ds.o : src/sbwnd/sb_ds.c $(headers)
 	gcc -c -g -o obj/sb_ds.o src/sbwnd/sb_ds.c $(CFLAGS)
