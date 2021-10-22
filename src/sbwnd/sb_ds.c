@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include "sbwnd/sb_ds.h"
 
-#define TABLE_PRIME     (11)
-
 DatastructuresStruct Datastructures;
 
 void initDS(void) {
