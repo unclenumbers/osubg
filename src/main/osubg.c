@@ -21,6 +21,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hprev, LPSTR lpCmdLine, int n
 
     sbWnd *first = SBMasterWindows.create( L"osubg v0.1", &lout );
 
+    seekEventHeader( NULL, NULL );
+    
     msgloop( );
 
     shutdownSB( );

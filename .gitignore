@@ -1,5 +1,5 @@
 .vscode
 obj/*
 bin/osubg.exe
-res\*.o
+res/*.o
 *.txt
