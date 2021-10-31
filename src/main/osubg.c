@@ -1,5 +1,6 @@
 #include <windows.h>
 #include "sbwnd/sbgui.h"
+#include "osubg-cmd/ofile.h"
 
 //#define RELEASE
 

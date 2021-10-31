@@ -13,6 +13,11 @@
  * 
  *  .osu files have bg lines, I can just replace the bg entry with my "graybg.png"
  *  can also gen unique names if needed
+ * 
+ * The general idea is to:
+ *  Copy all directories from Songs folder
+ *  copy all .osu files into folders, but only with bg filenames and the current mode (gray or normal).
+ *  maintain map count, print statements to console or gui.
  */
 
 int osubgRefresh( void );
