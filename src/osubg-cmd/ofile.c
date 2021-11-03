@@ -2,60 +2,86 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <stdint.h>
+
+#define UNICODE
+
 #include <windows.h>
 #include "osubg-cmd/ofile.h"
 
-#define _USE_MINGW_ANSI_STDIO 1
-
-int seekEventHeader( FILE *f, wchar_t *filename ) {
+int ofileSeekEventHeader( FILE *f ) {
 	// [Events] = 8 chars
+	char header[9] = { 0 };
 	wchar_t
-		header[9] = { 0 },
-		current = 0;
+		current = 0,
+		filler = 0;
 
-	FILE
-		*test = _wfopen( L"test.txt", L"r" ),
-		*test2 = fopen( "test.txt", "r" );
-	size_t
-		fileChCount = 0,
-		fileChCount2 = 0;
+	while ( ( current = fgetwc( f ) ) != WEOF ) {
+		if ( current == L'[' ) {
 
-	wchar_t cha = 0;
-	char cha2 = 0;
-	while ( ( cha = fgetwc( test ) ) != WEOF ) {
-		fileChCount++;
-		wprintf( L"Character code wide: %hx\n", cha );
+			header[0] = current;
+			for ( int i = 1; i < 8; i++ ) {
+				filler = fgetwc( f );
+				if  ( filler == WEOF ) return 0;
+				header[i] = filler;
+			}
+
+			if ( !strcmp( header, "[Events]" ) )
+				return 1;
+			else
+				fseek( f, -7, SEEK_CUR );
+		}
 	}
 
-	while ( ( cha2 = fgetc( test2 ) )!= EOF ) {
-		fileChCount2++;
-		wprintf( L"Character code: %hhx\n", cha2 );
-	}
-	
-	wchar_t *imstr = L"妹妹妹😊";
-	size_t sz = wcslen( imstr );
-	wprintf( L"size of string: %zu\n", sz );
-
-	wprintf( L"single-byte char count: %u\n", ( unsigned int )fileChCount2 );
-
-	wprintf( L"Character count: %llu\n", fileChCount );
-	wchar_t *fString = calloc( ( fileChCount + 1 ), sizeof( wchar_t ) );
-
-	fseek( test, 0, SEEK_SET );
-
-	FILE *out = _wfopen( L"testout.txt", L"w" );
-	wchar_t ch = 0;
-	size_t curCh = 0;
-	while ( ( ch = fgetwc( test ) ) != WEOF ) {
-		fString[ curCh++ ] = ch;
-		int chars = fwprintf( out, L"%s\n", fString );
-		//NormalizeString( NormalizationC, fString, -1, NULL, 0 );
-		//int normal = IsNLSDefinedString( COMPARE_STRING, 0, NULL, fString, -1 );
-		//if ( !normal ) {
-			printf( "Input unicode bad! " );
-		//}
-
-		printf( "Chars written: %i\n", chars );
-	}
 	return 0;
+}
+
+int ofileReadQuotes( FILE *f, uint32_t *length, char *str ) {
+	wchar_t current = 0;
+	uint32_t size = 0;
+
+	while ( ( current = fgetwc( f ) ) != WEOF ) {
+		if ( current == L'\"' ) {
+			while ( ( current = fgetwc( f ) ) != L'\"' ) {
+				if ( current == WEOF ) return 0;
+				size++;
+			}
+
+			*length = size;
+			int64_t seeker = size;
+			// Seek to just after the first quote
+			fseek( f, ( -seeker - 1 ), SEEK_CUR );
+
+			if ( str == NULL ) {
+				// Preserve quotes if user only wants size
+				fseek( f, -1, SEEK_CUR );
+				return 1;
+			}
+
+			for ( uint32_t i = 0; i < size; i++ )
+				str[i] = fgetwc( f );
+
+			fseek( f, 1, SEEK_CUR ); // Set cursor to after second quote
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+int ofileCreateConfigFile( void ) {
+	DWORD usernameLength = 256;
+	wchar_t username[ MAX_PATH ] = { 0 };
+	GetUserName( username, &usernameLength );
+
+	wchar_t appDataPath[ MAX_PATH ] = { 0 };
+	swprintf( appDataPath, MAX_PATH, L"\\Users\\%ls\\AppData\\Roaming\\osubg", username );
+
+	if ( GetFileAttributes( appDataPath ) == INVALID_FILE_ATTRIBUTES ) {
+		CreateDirectory( appDataPath, NULL );
+	}
+
+	swprintf( appDataPath, MAX_PATH, L"\\Users\\%ls\\AppData\\Roaming\\osubg\\osubg.conf", username );
+	FILE *f = _wfopen( appDataPath, L"a" );
+	return f != NULL;
+
 }
