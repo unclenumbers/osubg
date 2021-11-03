@@ -2,7 +2,7 @@
 #include "sbwnd/sbgui.h"
 #include "osubg-cmd/ofile.h"
 
-//#define RELEASE
+#define RELEASE
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hprev, LPSTR lpCmdLine, int nCmdShow ) {
 
