@@ -1,8 +1,11 @@
 // Operations for file I/O in the context of .osu files, mapset directories, and partial copies of .osu files.
 // Also includes operations for the config file, osubg.cfg.
+#ifndef OSUBG_OFILE
+#define OSUBG_OFILE
+#endif
+
 #include <stdio.h>
 #include <stdint.h>
-#include <wchar.h>
 
 // Seeks to the position immediately after the [Events] header.
 // Only searches after the current position.

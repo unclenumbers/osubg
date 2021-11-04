@@ -1,4 +1,4 @@
-CFLAGS = -I./include -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -D _UNICODE
+CFLAGS = -I./include -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -DUNICODE
 
 LIBS = -lgdiplus -lgdi32 -luser32 -lcomdlg32
 

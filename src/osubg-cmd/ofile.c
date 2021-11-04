@@ -3,8 +3,6 @@
 #include <wchar.h>
 #include <stdint.h>
 
-#define UNICODE
-
 #include <windows.h>
 #include "osubg-cmd/ofile.h"
 
