@@ -2,8 +2,8 @@ CFLAGS = -I./include -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-
 
 LIBS = -lgdiplus -lgdi32 -luser32 -lcomdlg32
 
-vpath %.h include/sbwnd include/res include/osubg-cmd
-vpath %.c src/sbwnd src/main src/osubg-cmd
+vpath %.h include/sbwnd include/res include/osubg-cmd include/graybg
+vpath %.c src/sbwnd src/main src/osubg-cmd src/graybg
 vpath %.o obj res
 vpath %.rc res
 
@@ -34,6 +34,15 @@ res/sbwnd_res.o : sbwnd_res.rc sbwnd_res.h
 	windres -o $@ -I include/res/ $<
 
 obj/ofile.o : ofile.c ofile.h | obj
+	gcc -c -g -o $@ $< $(CFLAGS)
+
+obj/graybgjpg.o : graybgjpg.c graybg.h | obj
+	gcc -c -g -o $@ $< $(CFLAGS)
+
+obj/graybgpng.o : graybgpng.c graybg.h | obj
+	gcc -c -g -o $@ $< $(CFLAGS)
+
+obj/graybgsmall.o : graybgsmall.c graybg.h | obj
 	gcc -c -g -o $@ $< $(CFLAGS)
 
 .PHONY: clean

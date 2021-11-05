@@ -2,6 +2,7 @@
 #include "sbwnd/sbgui.h"
 #include "osubg-cmd/ofile.h"
 #include "osubg-cmd/osubg.h"
+#include "graybg/graybg.h"
 
 //#define RELEASE
 
