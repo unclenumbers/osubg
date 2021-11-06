@@ -5,6 +5,7 @@
 
 #include <windows.h>
 #include "osubg-cmd/ofile.h"
+#include "graybg/graybg.h"
 
 int ofileSeekEventHeader( FILE *f ) {
 	// [Events] = 8 chars
@@ -66,7 +67,7 @@ int ofileReadQuotes( FILE *f, uint32_t *length, char *str ) {
 	return 0;
 }
 
-int ofileCreateConfigFile( void ) {
+int ofileCreateConfig( void ) {
 	DWORD usernameLength = 256;
 	wchar_t username[ MAX_PATH ] = { 0 };
 	GetUserName( username, &usernameLength );
@@ -86,14 +87,104 @@ int ofileCreateConfigFile( void ) {
 	SetCurrentDirectory( path );
 
 	swprintf( path, MAX_PATH, L"osubg.conf" );
-	FILE *f = _wfopen( path, L"a" );
-	if ( f == NULL)
-		return 1;
+	FILE *f = _wfopen( path, L"r" );
+	if ( f == NULL) {
+		f = _wfopen( L"osubg.conf", L"w" );
+		if ( f == NULL )
+			return 0;
+		fwprintf( f, L"osu! path: \"\"\nmapset count: \"0\"\ncurrent mode: \"normal\"\n" );
+	}
+	
+	fclose( f );
 
 	swprintf( path, MAX_PATH, L"mapsets.txt" );
 	f = _wfopen( path, L"a" );
 	if ( f == NULL)
-		return 1;
+		return 0;
+	fclose( f );
 
-	return 0;
+	// graybgpng, graybgjpg, and graybgsmall are external array variables.
+	// They represent the three backgrounds that osubg needs.
+	f = _wfopen( L"graybg.png", L"rb" );
+	if ( f == NULL ) {
+		f = _wfopen( L"graybg.png", L"wb" );
+		fwrite( graybgpng, 1, sizeof( graybgpng ), f );
+		fclose( f );
+	}
+
+	f = _wfopen( L"graybg.jpg", L"rb" );
+	if ( f == NULL ) {
+		f = _wfopen( L"graybg.jpg", L"wb" );
+		fwrite( graybgjpg, 1, sizeof( graybgjpg ), f );
+		fclose( f );
+	}
+
+	f = _wfopen( L"graybgsmall.jpg", L"rb" );
+	if ( f == NULL ) {
+		f = _wfopen( L"graybgsmall.jpg", L"wb" );
+		fwrite( graybgsmall, 1, sizeof( graybgsmall ), f );
+		fclose( f );
+	}
+
+	return 1;
+}
+
+int ofileGetConfig( osubgConfig *cfg ) {
+
+	FILE *f = _wfopen( L"osubg.conf", L"r" );
+	if ( f == NULL )
+		return 0;
+
+	// Path, then mapset count, then mode.
+	uint32_t len = 0;
+
+	ofileReadQuotes( f, &len, NULL );
+	char *str = calloc( ( len + 1 ), sizeof( char ) );
+
+	ofileReadQuotes( f, &len, str );
+	cfg->osuPath = str;
+
+
+	ofileReadQuotes( f, &len, NULL );
+	str = calloc( len + 1, sizeof( char ) );
+
+	ofileReadQuotes( f, &len, str );
+	cfg->mapsetCount = atol( str );
+
+	free( str ); // Don't need the string this time.
+
+
+	ofileReadQuotes( f, &len, NULL );
+	str = calloc( len + 1, sizeof( char ) );
+
+	ofileReadQuotes( f, &len, str );
+	if ( !strcmp( str, "normal" ) )
+		cfg->currentMode = 0;
+	else if ( !strcmp( str, "gray" ) )
+		cfg->currentMode = 1;
+	else
+		return 0;
+	free( str ); // Don't need the string this time either.
+	
+	fclose( f );
+	return 1;
+}
+
+int ofileSetConfig( osubgConfig *cfg ) {
+	
+	FILE *f = _wfopen( L"osubg.conf", L"w" );
+	fprintf(
+		f,
+		"osu! path: \"%s\"\nmapset count: \"%u\"\ncurrent mode: \"%s\"\n",
+		cfg->osuPath,
+		cfg->mapsetCount,
+		( cfg->currentMode ? "gray" : "normal" )
+	);
+	
+	return 1;
+}
+
+int ofileDestroyConfig( osubgConfig *cfg ) {
+	free( cfg->osuPath );
+	return 1;
 }

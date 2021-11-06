@@ -20,7 +20,29 @@ int ofileSeekEventHeader( FILE *f );
 // Returns a nonzero value on success.
 int ofileReadQuotes( FILE *f, uint32_t *length, char *str );
 
-// Creates config file in [user]/AppData/Roaming/osubg.
+// Creates config file with base defaults in [user]/AppData/Roaming/osubg.
 // Returns 0 on failiure, and a nonzero value on success.
 // This function also creates the osubg directory in appdata.
-int ofileCreateConfigFile( void );
+int ofileCreateConfig( void );
+
+typedef struct osubgConfig_t {
+	char *osuPath;
+	uint32_t mapsetCount;
+	// The current mode is a string in the config file
+	// for easier interpretation by the user--"normal" or "gray".
+	// is easier to look at than "1" or "0", but those can be used internally.
+	// 1 = gray, 0 = normal.
+	int currentMode;
+} osubgConfig;
+
+// Gets a config object from the config file.
+// Returns 0 on failiure, nonzero otherwise.
+int ofileGetConfig( osubgConfig *cfg );
+
+// Writes a config object to the config file.
+// Returns 0 on failiure, nonzero otherwise.
+int ofileSetConfig( osubgConfig *cfg );
+
+// Destroys a config object.
+// Returns 0 on failiure, nonzero otherwise.
+int ofileDestroyConfig( osubgConfig *cfg );

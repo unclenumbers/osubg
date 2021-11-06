@@ -7,7 +7,8 @@ vpath %.c src/sbwnd src/main src/osubg-cmd src/graybg
 vpath %.o obj res
 vpath %.rc res
 
-objects = osubg.o sb_ds.o sbwnd_init.o sbwnd_create.o sbwnd_general.o sbwnd_proc.o sbwnd_res.o ofile.o
+objects = osubg.o sb_ds.o sbwnd_init.o sbwnd_create.o sbwnd_general.o sbwnd_proc.o sbwnd_res.o ofile.o \
+graybgpng.o graybgjpg.o graybgsmall.o
 
 bin/osubg.exe : $(objects) | bin
 	gcc -o $@ $^ $(LIBS)

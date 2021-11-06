@@ -23,11 +23,19 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hprev, LPSTR lpCmdLine, int n
 
     //sbWnd *first = SBMasterWindows.create( L"osubg v0.1", &lout );
 
+    int res = ofileCreateConfig( );
+    printf( "%d\n", res );
+
+    osubgConfig cfg = { 0 };
+    ofileGetConfig( &cfg );
+    ofileSetConfig( &cfg );
+    ofileDestroyConfig( &cfg );
+
     wchar_t **argv;
     int argc;
 
     argv = CommandLineToArgvW( GetCommandLine( ), &argc );
-    int res = osubgExecuteCommand( argv, argc );
+    res = osubgExecuteCommand( argv, argc );
 
     //msgloop( );
 
