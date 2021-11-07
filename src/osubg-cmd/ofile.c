@@ -110,22 +110,28 @@ int ofileCreateConfig( void ) {
 		f = _wfopen( L"graybg.png", L"wb" );
 		fwrite( graybgpng, 1, sizeof( graybgpng ), f );
 		fclose( f );
-	}
+	} else
+		fclose( f );
 
 	f = _wfopen( L"graybg.jpg", L"rb" );
 	if ( f == NULL ) {
 		f = _wfopen( L"graybg.jpg", L"wb" );
 		fwrite( graybgjpg, 1, sizeof( graybgjpg ), f );
 		fclose( f );
-	}
+	} else
+		fclose( f );
 
 	f = _wfopen( L"graybgsmall.jpg", L"rb" );
 	if ( f == NULL ) {
 		f = _wfopen( L"graybgsmall.jpg", L"wb" );
 		fwrite( graybgsmall, 1, sizeof( graybgsmall ), f );
 		fclose( f );
-	}
+	} else
+		fclose( f );
 
+
+	SetCurrentDirectory( currentPath );
+	free( currentPath );
 	return 1;
 }
 
@@ -171,6 +177,24 @@ int ofileGetConfig( osubgConfig *cfg ) {
 }
 
 int ofileSetConfig( osubgConfig *cfg ) {
+
+	DWORD usernameLength = 256;
+	wchar_t username[ MAX_PATH ] = { 0 };
+	GetUserName( username, &usernameLength );
+
+
+	uint32_t currentSize = GetCurrentDirectory( 0, NULL );
+	wchar_t *currentPath = calloc( currentSize, sizeof( wchar_t ) );
+	GetCurrentDirectory( currentSize, currentPath );
+
+
+	wchar_t path[ MAX_PATH ] = { 0 };
+	swprintf( path, MAX_PATH, L"\\Users\\%ls\\AppData\\Roaming\\osubg", username );
+	
+	if ( GetFileAttributes( path ) == INVALID_FILE_ATTRIBUTES )
+		CreateDirectory( path, NULL );
+	
+	SetCurrentDirectory( path );
 	
 	FILE *f = _wfopen( L"osubg.conf", L"w" );
 	fprintf(
@@ -180,6 +204,9 @@ int ofileSetConfig( osubgConfig *cfg ) {
 		cfg->mapsetCount,
 		( cfg->currentMode ? "gray" : "normal" )
 	);
+
+	free( currentPath );
+	SetCurrentDirectory( currentPath );
 	
 	return 1;
 }

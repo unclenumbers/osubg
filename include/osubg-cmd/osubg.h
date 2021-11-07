@@ -12,7 +12,7 @@
 
 #ifndef OSUBG_OSUBG
 #define OSUBG_OSUBG
-#endif
+
 
 #include <wchar.h>
 
@@ -22,3 +22,5 @@
 // Can take up to 3 arguments, 2 for most commands.
 // The only command that gets 3 is setfolder.
 int osubgExecuteCommand( wchar_t **argv, int argc );
+
+#endif

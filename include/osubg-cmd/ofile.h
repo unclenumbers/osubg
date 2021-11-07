@@ -2,7 +2,6 @@
 // Also includes operations for the config file, osubg.cfg.
 #ifndef OSUBG_OFILE
 #define OSUBG_OFILE
-#endif
 
 #include <stdio.h>
 #include <stdint.h>
@@ -46,3 +45,5 @@ int ofileSetConfig( osubgConfig *cfg );
 // Destroys a config object.
 // Returns 0 on failiure, nonzero otherwise.
 int ofileDestroyConfig( osubgConfig *cfg );
+
+#endif

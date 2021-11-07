@@ -7,8 +7,8 @@ vpath %.c src/sbwnd src/main src/osubg-cmd src/graybg
 vpath %.o obj res
 vpath %.rc res
 
-objects = osubg.o sb_ds.o sbwnd_init.o sbwnd_create.o sbwnd_general.o sbwnd_proc.o sbwnd_res.o ofile.o \
-graybgpng.o graybgjpg.o graybgsmall.o
+objects = osubg.o sb_ds.o sbwnd_init.o sbwnd_create.o sbwnd_general.o sbwnd_proc.o sbwnd_res.o \
+ofile.o refresh.o setfolder.o graybgpng.o graybgjpg.o graybgsmall.o
 
 bin/osubg.exe : $(objects) | bin
 	gcc -o $@ $^ $(LIBS)
@@ -35,6 +35,12 @@ res/sbwnd_res.o : sbwnd_res.rc sbwnd_res.h
 	windres -o $@ -I include/res/ $<
 
 obj/ofile.o : ofile.c ofile.h | obj
+	gcc -c -g -o $@ $< $(CFLAGS)
+
+obj/refresh.o : refresh.c refresh.h ofile.h | obj
+	gcc -c -g -o $@ $< $(CFLAGS)
+
+obj/setfolder.o : setfolder.c setfolder.h ofile.h | obj
 	gcc -c -g -o $@ $< $(CFLAGS)
 
 obj/graybgjpg.o : graybgjpg.c graybg.h | obj
