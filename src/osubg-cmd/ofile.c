@@ -4,8 +4,29 @@
 #include <stdint.h>
 
 #include <windows.h>
+#include <lmcons.h> // needed for UNLEN
+
 #include "osubg-cmd/ofile.h"
 #include "graybg/graybg.h"
+
+int osubgToAppDataPath( void ) {
+	DWORD usernameLength = UNLEN + 1;
+	wchar_t username[ UNLEN + 1 ] = { 0 };
+	int res = GetUserName( username, &usernameLength );
+	
+	if ( !res )
+		return GetLastError( );
+
+	wchar_t path[ MAX_PATH ] = { 0 };
+	swprintf( path, MAX_PATH, L"\\Users\\%ls\\AppData\\Roaming\\osubg", username );
+	
+	if ( GetFileAttributes( path ) == INVALID_FILE_ATTRIBUTES )
+		CreateDirectory( path, NULL );
+	
+	SetCurrentDirectory( path );
+
+	return GetLastError( );
+}
 
 int ofileSeekEventHeader( FILE *f ) {
 	// [Events] = 8 chars
@@ -68,37 +89,17 @@ int ofileReadQuotes( FILE *f, uint32_t *length, char *str ) {
 }
 
 int ofileCreateConfig( void ) {
-	DWORD usernameLength = 256;
-	wchar_t username[ MAX_PATH ] = { 0 };
-	GetUserName( username, &usernameLength );
 
-
-	uint32_t currentSize = GetCurrentDirectory( 0, NULL );
-	wchar_t *currentPath = calloc( currentSize, sizeof( wchar_t ) );
-	GetCurrentDirectory( currentSize, currentPath );
-
-
-	wchar_t path[ MAX_PATH ] = { 0 };
-	swprintf( path, MAX_PATH, L"\\Users\\%ls\\AppData\\Roaming\\osubg", username );
-	
-	if ( GetFileAttributes( path ) == INVALID_FILE_ATTRIBUTES )
-		CreateDirectory( path, NULL );
-	
-	SetCurrentDirectory( path );
-
-	swprintf( path, MAX_PATH, L"osubg.conf" );
-	FILE *f = _wfopen( path, L"r" );
+	FILE *f = _wfopen( L"osubg.conf", L"r" );
 	if ( f == NULL) {
 		f = _wfopen( L"osubg.conf", L"w" );
 		if ( f == NULL )
 			return 0;
 		fwprintf( f, L"osu! path: \"\"\nmapset count: \"0\"\ncurrent mode: \"normal\"\n" );
 	}
-	
 	fclose( f );
 
-	swprintf( path, MAX_PATH, L"mapsets.txt" );
-	f = _wfopen( path, L"a" );
+	f = _wfopen( L"mapsets.txt", L"a" );
 	if ( f == NULL)
 		return 0;
 	fclose( f );
@@ -129,9 +130,6 @@ int ofileCreateConfig( void ) {
 	} else
 		fclose( f );
 
-
-	SetCurrentDirectory( currentPath );
-	free( currentPath );
 	return 1;
 }
 
@@ -178,24 +176,6 @@ int ofileGetConfig( osubgConfig *cfg ) {
 
 int ofileSetConfig( osubgConfig *cfg ) {
 
-	DWORD usernameLength = 256;
-	wchar_t username[ MAX_PATH ] = { 0 };
-	GetUserName( username, &usernameLength );
-
-
-	uint32_t currentSize = GetCurrentDirectory( 0, NULL );
-	wchar_t *currentPath = calloc( currentSize, sizeof( wchar_t ) );
-	GetCurrentDirectory( currentSize, currentPath );
-
-
-	wchar_t path[ MAX_PATH ] = { 0 };
-	swprintf( path, MAX_PATH, L"\\Users\\%ls\\AppData\\Roaming\\osubg", username );
-	
-	if ( GetFileAttributes( path ) == INVALID_FILE_ATTRIBUTES )
-		CreateDirectory( path, NULL );
-	
-	SetCurrentDirectory( path );
-	
 	FILE *f = _wfopen( L"osubg.conf", L"w" );
 	fprintf(
 		f,
@@ -205,9 +185,6 @@ int ofileSetConfig( osubgConfig *cfg ) {
 		( cfg->currentMode ? "gray" : "normal" )
 	);
 
-	free( currentPath );
-	SetCurrentDirectory( currentPath );
-	
 	return 1;
 }
 

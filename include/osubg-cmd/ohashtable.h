@@ -3,6 +3,10 @@
  * Rehashing is also not provided as the maximum size of the table will be known before its creation.
  * The hash table is only a search structure that only ever gets added to.
  * The table uses linear (how stoopid) probing for collisions.
+ * 
+ * Honestly, this is closer to an array than a full hash table.
+ * No deletion, internal table size, rehashing, none of that.
+ * It's really just an array with a thin skin and an included hashing function.
  */ 
 
 #ifndef OSUBG_OHASHTABLE

@@ -6,6 +6,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// Sets the current application directory to the user's AppData\osubg folder.
+// Returns zero on success, returns the value of GetLastError( ) on failure.
+// osubg does not ever remove itself from this folder.
+int osubgToAppDataPath( void );
+
 // Seeks to the position immediately after the [Events] header.
 // Only searches after the current position.
 // Returns zero if search was a failiure, nonzero otherwise.
@@ -13,7 +18,7 @@ int ofileSeekEventHeader( FILE *f );
 
 // Gets the size of the string between the next pair of quotation marks,
 // and the string itself if the char pointer supplied is not null.
-// Returns size of the string in the length argument, and 0 on failiure.
+// The size of the string will be in the length argument (WITHOUT the null character), and 0 is returned on failiure.
 // If the char pointer is null, the file seeks back to before the quotes
 // so that it can be called again.
 // Returns a nonzero value on success.

@@ -13,19 +13,19 @@
  *  png and jpg gray bgs and a small jpg for the thumbnails
  *  
  *  ~~~mapsets.txt~~~
- *  "main menu backgrounds" : "gray"
- *  "nnnn whatever" : "gray"
+ *  "main menu backgrounds" : "gray/normal"
+ *  "nnnn whatever" : "gray/normal"
  *  \t"number of bgs in set"
  *  \t"bg1"
  *  \t"bg2"
  *  \t"bgn"
- *  nnnn whatever: "gray"
+ *  "nnnn whatever": "gray"
  *  ...
  *  
  *  The file is parsed by reading quoted sections one by one
  * 
  *  the thumbnails are tied to the mapset, not each map.
- *  the main menu bgs are treated like one mapset.
+ *  the main menu bgs are treated like one mapset, with the name "main menu backgrounds".
  *  for each mapset: find all .osu files, read bg names of all of them, 
  */
 #include "osubg-cmd/ofile.h"
@@ -43,7 +43,7 @@ typedef struct osubgMapset_t {
     char **mapBgNames;
 } osubgMapset;
 
-int orefreshGetMapsetArray( osubgMapset *arr, size_t *size );
+int orefreshGetMapsetArray( osubgMapset **arr, size_t *size );
 
 int osubgRefreshReload( void );
 int osubgRefreshReplace( void );

@@ -26,12 +26,35 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hprev, LPSTR lpCmdLine, int n
 
 	//sbWnd *first = SBMasterWindows.create( L"osubg v0.1", &lout );
 
-	int res = ofileCreateConfig( );
+	SetCurrentDirectory( L".." );
+	WIN32_FIND_DATA data = { 0 };
+	
+	HANDLE h = FindFirstFile( L"*", &data );
+	if ( h == INVALID_HANDLE_VALUE ) {
+		DWORD er = GetLastError( );
+		wchar_t *msg = NULL;
+		FormatMessage( 
+			FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			er,
+			0,
+			( wchar_t * )&msg, 0, NULL
+		);
 
-	osubgConfig cfg = { 0 };
-	ofileGetConfig( &cfg );
-	ofileSetConfig( &cfg );
-	ofileDestroyConfig( &cfg );
+		MessageBox( NULL, msg, L"cunny", MB_OK );
+	} else {
+		while ( GetLastError( ) == 0 ) {
+			wprintf( L"%s\n", data.cFileName );
+			FindNextFile( h, &data );
+		}
+	}
+
+	int res = osubgToAppDataPath( );
+	res = ofileCreateConfig( );
+
+	orefreshGetMapsetArray( NULL, NULL );
 
 	wchar_t **argv;
 	int argc;
