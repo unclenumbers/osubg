@@ -13,15 +13,19 @@
  *  png and jpg gray bgs and a small jpg for the thumbnails
  *  
  *  ~~~mapsets.txt~~~
- *  "main menu backgrounds" : "gray/normal"
- *  "nnnn whatever" : "gray/normal"
- *  \t"number of bgs in set"
+ *  "main menu backgrounds" : "gray/normal" : "id"
+ *  "0"
+ *  "nnnn whatever" : "gray/normal" : "id"
+ *  \t"n"
  *  \t"bg1"
  *  \t"bg2"
  *  \t"bgn"
  *  "nnnn whatever": "gray"
  *  ...
  *  
+ *  id for unsubmitted map is -1
+ *  id for main menu bgs is -2
+ * 
  *  The file is parsed by reading quoted sections one by one
  * 
  *  the thumbnails are tied to the mapset, not each map.
@@ -29,6 +33,7 @@
  *  for each mapset: find all .osu files, read bg names of all of them, 
  */
 #include "osubg-cmd/ofile.h"
+#include "osubg-cmd/ohashtable.h"
 
 #ifndef OSUBG_REFRESH
 #define OSUBG_REFRESH
@@ -37,15 +42,32 @@
 int osubgRefresh( void );
 
 typedef struct osubgMapset_t {
-    char *mapsetTitle;
+    char
+        *mapsetTitle,
+        *mapsetId;
+
     int mode;
     size_t mapCount;
     char **mapBgNames;
 } osubgMapset;
 
+typedef enum osuMapsetFlag_t {
+
+    MAPSET_NAME = 0,
+    MAPSET_MODE = 1,
+    MAPSET_ID = 2,
+    MAPSET_BG_COUNT = 3,
+    MAPSET_FLAG_MODULO = 4,
+
+} osubgMapsetFlag;
+
+// Returns a nonzero value if array has no length (failure), 0 on success.
 int orefreshGetMapsetArray( osubgMapset **arr, size_t *size );
 
+// Returns nonzero value on failure, zero on success.
 int osubgRefreshReload( void );
+
+// Returns nonzero value on failure, zero on success.
 int osubgRefreshReplace( void );
 
 #endif
