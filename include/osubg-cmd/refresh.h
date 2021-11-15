@@ -62,7 +62,18 @@ typedef enum osuMapsetFlag_t {
 } osubgMapsetFlag;
 
 // Returns a nonzero value if array has no length (failure), 0 on success.
+// Gets all mapsets from mapsets.txt.
 int orefreshGetMapsetArray( osubgMapset **arr, size_t *size );
+
+// Returns a nonzero value on failure, 0 on success.
+// Sets the information in mapsets.txt.
+int orefreshSetMapsetsFile( osubgMapset *arr, size_t size );
+
+// Returns a nonzero value on failure, 0 on success.
+// Gets all the mapsets in the mapsets folder into an array.
+// By the way, the count of mapsets may not be fully accurate (multiple downloads of mapsets)
+// and the number of "maps" is actually the number of unique backgrounds (which may also no be fully accurate).
+int orefreshReadMapsDirectory( osubgMapset **arr, size_t *size );
 
 // Returns nonzero value on failure, zero on success.
 int osubgRefreshReload( void );

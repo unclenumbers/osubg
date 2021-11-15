@@ -49,6 +49,9 @@ int oHashTableSearch( osubgHashTable *table, char *str ) {
 }
 
 void osubgDestroyHashTable( osubgHashTable **table ) {
+    if ( *table == NULL )
+        return;
+
     free( ( *table )->table );
     free( *table );
     *table = NULL;

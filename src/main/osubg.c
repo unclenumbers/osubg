@@ -54,8 +54,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hprev, LPSTR lpCmdLine, int n
 	int res = osubgToAppDataPath( );
 	res = ofileCreateConfig( );
 
-	orefreshGetMapsetArray( NULL, NULL );
-
+	osubgRefreshReload( );
 	wchar_t **argv;
 	int argc;
 

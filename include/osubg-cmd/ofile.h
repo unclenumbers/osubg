@@ -40,7 +40,7 @@ typedef struct osubgConfig_t {
 } osubgConfig;
 
 // Gets a config object from the config file.
-// Returns 0 on failiure, nonzero otherwise.
+// Returns 0 on failure, nonzero otherwise.
 int ofileGetConfig( osubgConfig *cfg );
 
 // Writes a config object to the config file.

@@ -20,17 +20,16 @@ int osubgRefreshReload( void ) {
 	size_t arrSize = 0;
 
 	orefreshGetMapsetArray( &arr, &arrSize );
-	if ( !arrSize )
-		return 1;
 	
 	osubgHashTable *hashTable = oHashTableCreate( arrSize * 3 );
-	if ( hashTable == NULL )
-		return 1;
 
 	for ( size_t i = 0; i < arrSize; i++ )
 		oHashTableAdd( hashTable, arr[i].mapsetTitle );
 
-	
+	orefreshReadMapsDirectory( NULL, NULL );
+
+
+	osubgDestroyHashTable( &hashTable );
 	
 	return 0;
 }
@@ -129,6 +128,9 @@ int orefreshGetMapsetArray( osubgMapset **arr, size_t *size ) {
 				mapIdx = 0;
 				free( str );
 				break;
+
+			default:
+				break;
 		}
 
 		if ( !currentMapsetMapCount )
@@ -137,5 +139,22 @@ int orefreshGetMapsetArray( osubgMapset **arr, size_t *size ) {
 	}
 
 	fclose( mapsetsFile );
+	return 0;
+}
+
+int orefreshReadMapsDirectory( osubgMapset **arr, size_t *size ) {
+	osubgConfig cfg = { 0 };
+	ofileGetConfig( &cfg );
+
+	if ( !strlen( cfg.osuPath ) ) {
+		puts( "No osu! folder set! Please use the setfolder command to give osubg a folder." );
+		return 1;
+	}
+
+	int wsize = MultiByteToWideChar( CP_UTF8, 0, cfg.osuPath, -1, NULL, 0 );
+	wchar_t *wpath = calloc( wsize, sizeof( wchar_t ) );
+	MultiByteToWideChar( CP_UTF8, 0, cfg.osuPath, -1, wpath, wsize );
+
+	
 	return 0;
 }
